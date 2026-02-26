@@ -1,3 +1,4 @@
+
 package com.example.Menu_Analyzer;
 
 import org.springframework.boot.SpringApplication;
