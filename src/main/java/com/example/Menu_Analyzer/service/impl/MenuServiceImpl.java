@@ -14,7 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 @Service
-@RequiredArgsConstructor 
+@RequiredArgsConstructor
 public class MenuServiceImpl implements MenuService {
 
     private final MenuRepository menuRepository;
@@ -57,5 +57,12 @@ public class MenuServiceImpl implements MenuService {
                 .orElseThrow(() -> new IllegalArgumentException("Menu not found: " + menuId));
         return dishRepository.findByMenu(menu);
     }
-}
 
+    @Override
+    public Dish getDish(Long menuId, Long dishId) {
+        return dishRepository.findById(dishId)
+                .filter(dish -> dish.getMenu().getId().equals(menuId))
+                .orElseThrow(
+                        () -> new IllegalArgumentException("Dish not found or does not belong to menu: " + dishId));
+    }
+}

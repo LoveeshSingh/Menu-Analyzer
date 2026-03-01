@@ -8,7 +8,8 @@ import org.springframework.web.multipart.MultipartFile;
 public interface MenuService {
 
     /**
-     * Scan a menu image, persist Menu and Dish entities, and return the persisted Menu.
+     * Scan a menu image, persist Menu and Dish entities, and return the persisted
+     * Menu.
      */
     Menu scanMenu(MultipartFile imageFile);
 
@@ -21,5 +22,9 @@ public interface MenuService {
      * Load all Dish entities for a given menu id.
      */
     List<Dish> getDishes(Long menuId);
-}
 
+    /**
+     * Load a specific Dish entity by menu id and dish id.
+     */
+    Dish getDish(Long menuId, Long dishId);
+}
