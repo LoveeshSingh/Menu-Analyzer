@@ -5,7 +5,7 @@ import com.example.Menu_Analyzer.dto.MenuResponse;
 import com.example.Menu_Analyzer.dto.NutritionDto;
 import com.example.Menu_Analyzer.entity.Dish;
 import com.example.Menu_Analyzer.entity.Menu;
-import com.example.Menu_Analyzer.service.NutritionService;
+import com.example.Menu_Analyzer.service.FoodDataService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -15,7 +15,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class MenuMapper {
 
-	private final NutritionService nutritionService;
+	private final FoodDataService foodDataService;
 
 	public MenuResponse toMenuResponse(Menu menu, List<Dish> dishes) {
 		List<DishResponse> dishResponses = dishes.stream().map(this::toDishResponse).toList();
@@ -29,7 +29,7 @@ public class MenuMapper {
 	}
 
 	public DishResponse toDishResponse(Dish dish) {
-		NutritionDto nutritionDto = nutritionService.getNutritionForDish(dish);
+		NutritionDto nutritionDto = foodDataService.getNutritionForDish(dish);
 
 		return DishResponse.builder()
 				.id(dish.getId())

@@ -1,7 +1,10 @@
 package com.example.Menu_Analyzer.service.impl;
 
+import com.example.Menu_Analyzer.dto.DishResponse;
+import com.example.Menu_Analyzer.dto.MenuResponse;
 import com.example.Menu_Analyzer.entity.Dish;
 import com.example.Menu_Analyzer.entity.Menu;
+import com.example.Menu_Analyzer.mapper.MenuMapper;
 import com.example.Menu_Analyzer.repository.DishRepository;
 import com.example.Menu_Analyzer.repository.MenuRepository;
 import com.example.Menu_Analyzer.service.MenuParserService;
@@ -21,9 +24,10 @@ public class MenuServiceImpl implements MenuService {
     private final DishRepository dishRepository;
     private final OcrService ocrService;
     private final MenuParserService menuParserService;
+    private final MenuMapper menuMapper;
 
     @Override
-    public Menu scanMenu(MultipartFile imageFile) {
+    public MenuResponse scanMenu(MultipartFile imageFile) {
         String imagePath = imageFile.getOriginalFilename();
         if (imagePath == null || imagePath.isBlank()) {
             imagePath = "uploaded-menu";
@@ -42,27 +46,33 @@ public class MenuServiceImpl implements MenuService {
 
         menuParserService.parseAndPersistDishes(menu);
 
-        return menu;
+        List<Dish> dishes = dishRepository.findByMenu(menu);
+
+        return menuMapper.toMenuResponse(menu, dishes);
     }
 
     @Override
-    public Menu getMenu(Long menuId) {
-        return menuRepository.findById(menuId)
-                .orElseThrow(() -> new IllegalArgumentException("Menu not found: " + menuId));
-    }
-
-    @Override
-    public List<Dish> getDishes(Long menuId) {
+    public MenuResponse getMenu(Long menuId) {
         Menu menu = menuRepository.findById(menuId)
                 .orElseThrow(() -> new IllegalArgumentException("Menu not found: " + menuId));
-        return dishRepository.findByMenu(menu);
+        List<Dish> dishes = dishRepository.findByMenu(menu);
+        return menuMapper.toMenuResponse(menu, dishes);
     }
 
     @Override
-    public Dish getDish(Long menuId, Long dishId) {
-        return dishRepository.findById(dishId)
-                .filter(dish -> dish.getMenu().getId().equals(menuId))
+    public List<DishResponse> getDishes(Long menuId) {
+        Menu menu = menuRepository.findById(menuId)
+                .orElseThrow(() -> new IllegalArgumentException("Menu not found: " + menuId));
+        List<Dish> dishes = dishRepository.findByMenu(menu);
+        return dishes.stream().map(menuMapper::toDishResponse).toList();
+    }
+
+    @Override
+    public DishResponse getDish(Long menuId, Long dishId) {
+        Dish dish = dishRepository.findById(dishId)
+                .filter(d -> d.getMenu().getId().equals(menuId))
                 .orElseThrow(
                         () -> new IllegalArgumentException("Dish not found or does not belong to menu: " + dishId));
+        return menuMapper.toDishResponse(dish);
     }
 }

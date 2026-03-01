@@ -2,22 +2,19 @@ package com.example.Menu_Analyzer.controller;
 
 import com.example.Menu_Analyzer.dto.DishResponse;
 import com.example.Menu_Analyzer.dto.MenuResponse;
-import com.example.Menu_Analyzer.entity.Dish;
-import com.example.Menu_Analyzer.entity.Menu;
-import com.example.Menu_Analyzer.mapper.MenuMapper;
+import com.example.Menu_Analyzer.dto.MenuUploadRequest;
+import com.example.Menu_Analyzer.service.FoodDataService;
 import com.example.Menu_Analyzer.service.MenuService;
-import com.example.Menu_Analyzer.service.NutritionService;
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/menus")
@@ -25,45 +22,34 @@ import org.springframework.web.multipart.MultipartFile;
 public class MenuController {
 
     private final MenuService menuService;
-    private final NutritionService nutritionService;
-    private final MenuMapper menuMapper;
+    private final FoodDataService foodDataService;
 
     @PostMapping(value = "/scan", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public MenuResponse scanMenu(@RequestParam("image") @NotNull MultipartFile image) {
-        if (image.isEmpty()) {
+    public MenuResponse scanMenu(@Valid @ModelAttribute MenuUploadRequest request) {
+        if (request.getFile().isEmpty()) {
             throw new IllegalArgumentException("Uploaded file is empty");
         }
-
-        Menu menu = menuService.scanMenu(image);
-        List<Dish> dishes = menuService.getDishes(menu.getId());
-        return menuMapper.toMenuResponse(menu, dishes);
+        return menuService.scanMenu(request.getFile());
     }
 
     @PostMapping("/{menuId}/enrich")
     public MenuResponse enrichMenu(@PathVariable("menuId") Long menuId) {
-        nutritionService.enrichMenuDishes(menuId);
-
-        Menu menu = menuService.getMenu(menuId);
-        List<Dish> dishes = menuService.getDishes(menuId);
-        return menuMapper.toMenuResponse(menu, dishes);
+        foodDataService.enrichMenuDishes(menuId);
+        return menuService.getMenu(menuId);
     }
 
     @GetMapping("/{menuId}")
     public MenuResponse getMenu(@PathVariable("menuId") Long menuId) {
-        Menu menu = menuService.getMenu(menuId);
-        List<Dish> dishes = menuService.getDishes(menuId);
-        return menuMapper.toMenuResponse(menu, dishes);
+        return menuService.getMenu(menuId);
     }
 
     @GetMapping("/{menuId}/dishes")
     public List<DishResponse> getDishes(@PathVariable("menuId") Long menuId) {
-        List<Dish> dishes = menuService.getDishes(menuId);
-        return dishes.stream().map(menuMapper::toDishResponse).toList();
+        return menuService.getDishes(menuId);
     }
 
     @GetMapping("/{menuId}/dishes/{dishId}")
     public DishResponse getDish(@PathVariable("menuId") Long menuId, @PathVariable("dishId") Long dishId) {
-        Dish dish = menuService.getDish(menuId, dishId);
-        return menuMapper.toDishResponse(dish);
+        return menuService.getDish(menuId, dishId);
     }
 }

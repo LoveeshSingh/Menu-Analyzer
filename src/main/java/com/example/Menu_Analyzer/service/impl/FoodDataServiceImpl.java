@@ -7,7 +7,7 @@ import com.example.Menu_Analyzer.entity.Menu;
 import com.example.Menu_Analyzer.repository.DishNutritionRepository;
 import com.example.Menu_Analyzer.repository.DishRepository;
 import com.example.Menu_Analyzer.repository.MenuRepository;
-import com.example.Menu_Analyzer.service.NutritionService;
+import com.example.Menu_Analyzer.service.FoodDataService;
 import java.time.OffsetDateTime;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -16,7 +16,7 @@ import org.springframework.util.StringUtils;
 
 @Service
 @RequiredArgsConstructor
-public class NutritionServiceImpl implements NutritionService {
+public class FoodDataServiceImpl implements FoodDataService {
 
     private final MenuRepository menuRepository;
     private final DishRepository dishRepository;
