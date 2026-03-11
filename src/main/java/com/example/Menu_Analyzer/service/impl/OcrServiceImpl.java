@@ -59,16 +59,13 @@ public class OcrServiceImpl implements OcrService {
                 if (parsedResults.isArray() && !parsedResults.isEmpty()) {
                     return parsedResults.get(0).path("ParsedText").asText();
                 } else {
-                    System.err.println("OCR Error: " + root.path("ErrorMessage").asText());
                     return "Error parsing menu image.";
                 }
             }
             return "Failed to communicate with OCR service.";
         } catch (IOException e) {
-            e.printStackTrace();
             return "Error reading image file: " + e.getMessage();
         } catch (Exception e) {
-            e.printStackTrace();
             return "Error calling OCR service: " + e.getMessage();
         }
     }

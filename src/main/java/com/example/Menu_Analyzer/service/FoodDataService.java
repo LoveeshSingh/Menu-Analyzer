@@ -6,8 +6,6 @@ import com.example.Menu_Analyzer.entity.Dish;
 
 public interface FoodDataService {
 
-    void enrichMenuDishes(Long menuId);
-
     void enrichDish(Long dishId);
 
     FoodDetailsResponse searchFood(String query);

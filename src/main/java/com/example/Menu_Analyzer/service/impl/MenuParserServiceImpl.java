@@ -20,13 +20,7 @@ public class MenuParserServiceImpl implements MenuParserService {
 
     private final DishRepository dishRepository;
 
-    // Matches: "Dish Name" (no newlines allowed) followed by an optional $ and
-    // "Price"
-    // ([^\\r\\n\\t0-9][^\\r\\n\\t]*?) = Dish Name (Starts with
-    // not-newline/tab/number, followed by not-newline/tab)
-    // [\\t\\s]* = Any spaces or tabs between name and price
-    // \\$? = Optional Dollar Sign
-    // (\\d+(?:\\.\\d{2})?) = Price
+    // Regex matches: "Dish Name" followed by optional $ and "Price"
     private static final Pattern DISH_PRICE_PATTERN = Pattern
             .compile("([^\\r\\n\\t0-9][^\\r\\n\\t]*?)[\\t\\s]*\\$?(\\d+\\.\\d{2}|\\d+)");
 
@@ -37,21 +31,19 @@ public class MenuParserServiceImpl implements MenuParserService {
             return List.of();
         }
 
-        // We keep the original text, newlines intact, so we don't accidentally merge
-        // lines
+        // Keep original text formatting to avoid merging lines
         String cleanText = text;
 
         List<Dish> dishes = new ArrayList<>();
-        int position = 0;
 
-        // 2. Use a Matcher to find every occurrence of "Dish Name + Price"
+        // Use a Matcher to find "Dish Name + Price" occurrences
         Matcher matcher = DISH_PRICE_PATTERN.matcher(cleanText);
 
         while (matcher.find()) {
             String name = matcher.group(1).trim();
             BigDecimal price = new BigDecimal(matcher.group(2).trim());
 
-            // 3. Skip invalid names or massive numbers (sanity check)
+            // Skip invalid names or massive numbers
             if (name.isEmpty() || name.length() < 2 ||
                     name.equalsIgnoreCase("FOOD NAME") ||
                     name.equalsIgnoreCase("Veg") ||
@@ -68,8 +60,6 @@ public class MenuParserServiceImpl implements MenuParserService {
                     .menu(menu)
                     .name(name)
                     .price(price)
-                    .category(null) // Can be updated later with enrichment
-                    .positionIndex(position++)
                     .description(null) // No longer tracking descriptions since we merged all lines
                     .imageUrl(null)
                     .dietType(DietType.UNKNOWN)

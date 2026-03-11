@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-@RestController
+@RestController 
 @RequestMapping("/menus")
 @RequiredArgsConstructor
 public class MenuController {
@@ -30,12 +30,12 @@ public class MenuController {
             throw new IllegalArgumentException("Uploaded file is empty");
         }
         return menuService.scanMenu(request.getFile());
-    }
+    } 
 
-    @PostMapping("/{menuId}/enrich")
-    public MenuResponse enrichMenu(@PathVariable("menuId") Long menuId) {
-        foodDataService.enrichMenuDishes(menuId);
-        return menuService.getMenu(menuId);
+    @PostMapping("/{menuId}/dishes/{dishId}/enrich")
+    public DishResponse enrichDish(@PathVariable("menuId") Long menuId, @PathVariable("dishId") Long dishId) {
+        foodDataService.enrichDish(dishId);
+        return menuService.getDish(menuId, dishId);
     }
 
     @GetMapping("/{menuId}")

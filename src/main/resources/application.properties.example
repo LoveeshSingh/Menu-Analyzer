@@ -15,8 +15,8 @@ spring.h2.console.enabled=true
 spring.h2.console.path=/h2-console
 
 # OCR.Space API Configuration
-ocr.space.api.key=8457735abe88957
+ocr.space.api.key=YOUR_OCR_SPACE_API_KEY_HERE
 
 # Spoonacular API Configuration
-spoonacular.api.key=7d40e2286c244aa695c3250e3f182c69
+spoonacular.api.key=YOUR_SPOONACULAR_API_KEY_HERE
 spoonacular.api.url=https://api.spoonacular.com

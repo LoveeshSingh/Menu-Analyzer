@@ -22,7 +22,7 @@ import lombok.Setter;
 @Table(name = "dishes")
 @Getter
 @Setter
-@NoArgsConstructor 
+@NoArgsConstructor
 @AllArgsConstructor
 @Builder
 public class Dish {
@@ -45,12 +45,6 @@ public class Dish {
     private BigDecimal price;
 
     @Column
-    private String category;
-
-    @Column
-    private Integer positionIndex;
-
-    @Column
     private String imageUrl;
 
     @Enumerated(EnumType.STRING)
@@ -60,4 +54,3 @@ public class Dish {
     @Column(columnDefinition = "TEXT")
     private String recipeText;
 }
-

@@ -31,3 +31,10 @@ build/
 
 ### VS Code ###
 .vscode/
+
+### Environment Configs ###
+# Ignore custom configuration files containing API keys
+**/src/main/resources/application.properties
+**/src/main/resources/application-dev.properties
+**/src/main/resources/application-prod.properties
+.env

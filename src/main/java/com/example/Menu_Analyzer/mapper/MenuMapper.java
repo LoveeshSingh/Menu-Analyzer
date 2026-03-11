@@ -36,8 +36,6 @@ public class MenuMapper {
 				.name(dish.getName())
 				.description(dish.getDescription())
 				.price(dish.getPrice())
-				.category(dish.getCategory())
-				.positionIndex(dish.getPositionIndex())
 				.imageUrl(dish.getImageUrl())
 				.dietType(dish.getDietType())
 				.recipeText(dish.getRecipeText())
