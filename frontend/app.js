@@ -1,4 +1,5 @@
-const API_BASE_URL = "http://localhost:8080"; 
+const IS_LOCAL = window.location.hostname === "127.0.0.1" || window.location.hostname === "localhost";
+const API_BASE_URL = IS_LOCAL ? "http://localhost:8080" : "https://api.menu-analyzer.loveesh.me";
 
 document.getElementById('scanMenuForm').addEventListener('submit', async (e) => {
     e.preventDefault();
