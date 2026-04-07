@@ -22,7 +22,7 @@ public class MenuParserServiceImpl implements MenuParserService {
 
     // Regex matches: "Dish Name" followed by optional $ and "Price"
     private static final Pattern DISH_PRICE_PATTERN = Pattern
-            .compile("([^\\r\\n\\t0-9][^\\r\\n\\t]*?)[\\t\\s]*\\$?(\\d+\\.\\d{2}|\\d+)");
+            .compile("([a-zA-Z &'()\\-.,]+?)[ \\t]+(?:Rs\\.?|\\$|₹)?[ \\t]*([0-9]+(?:\\.[0-9]{1,2})?)");
 
     @Override
     public List<Dish> parseAndPersistDishes(Menu menu) {
@@ -32,7 +32,10 @@ public class MenuParserServiceImpl implements MenuParserService {
         }
 
         // Keep original text formatting to avoid merging lines
-        String cleanText = text;
+        String cleanText = text
+                .replace("\\t", "\t")
+                .replace("\\n", "\n")
+                .replace("\\r", "\r");
 
         List<Dish> dishes = new ArrayList<>();
 

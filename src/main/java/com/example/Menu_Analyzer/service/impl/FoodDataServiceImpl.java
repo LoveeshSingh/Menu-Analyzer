@@ -124,49 +124,53 @@ public class FoodDataServiceImpl implements FoodDataService {
     private SpoonacularResult fetchFromSpoonacular(String query) {
         SpoonacularResult result = new SpoonacularResult();
         try {
-            String url = spoonacularApiUrl + "/recipes/complexSearch?query=" + query
-                    + "&addRecipeNutrition=true&number=1&apiKey=" + spoonacularApiKey;
-            String responseStr = restTemplate.getForObject(url, String.class);
-            if (responseStr != null) {
-                JsonNode root = objectMapper.readTree(responseStr);
-                JsonNode results = root.path("results");
-                if (results.isArray() && !results.isEmpty()) {
-                    JsonNode firstResult = results.get(0);
-                    result.imageUrl = firstResult.path("image").asText(null);
-
-                    boolean vegetarian = firstResult.path("vegetarian").asBoolean(false);
-                    boolean vegan = firstResult.path("vegan").asBoolean(false);
-                    if (vegan || vegetarian) {
-                        result.dietType = DietType.VEG;
-                    } else if (firstResult.hasNonNull("vegetarian") && !vegetarian) {
-                        result.dietType = DietType.NON_VEG;
+            // Step 1: Specifically guess nutrition to prevent getting massive recipe calories (e.g. Espresso Brownie instead of Espresso)
+            String guessUrl = spoonacularApiUrl + "/recipes/guessNutrition?title=" + query + "&apiKey=" + spoonacularApiKey;
+            try {
+                String guessStr = restTemplate.getForObject(guessUrl, String.class);
+                if (guessStr != null) {
+                    JsonNode guessRoot = objectMapper.readTree(guessStr);
+                    if (guessRoot.has("status") && "failure".equals(guessRoot.path("status").asText())) {
+                        result.dataSource = "not-found";
+                    } else if (guessRoot.has("calories") && guessRoot.path("calories").has("value")) {
+                        result.calories = guessRoot.path("calories").path("value").asDouble(0.0);
+                        result.protein = guessRoot.path("protein").path("value").asDouble(0.0);
+                        result.carbs = guessRoot.path("carbs").path("value").asDouble(0.0);
+                        result.fat = guessRoot.path("fat").path("value").asDouble(0.0);
+                        result.dataSource = "spoonacular";
+                    } else {
+                        result.dataSource = "not-found";
                     }
+                }
+            } catch (Exception e) {
+                // If guess fails, proceed to search
+                result.dataSource = "fallback-error";
+            }
 
-                    JsonNode nutritionOpts = firstResult.path("nutrition");
-                    if (!nutritionOpts.isMissingNode()) {
-                        JsonNode nutrients = nutritionOpts.path("nutrients");
-                        if (nutrients.isArray()) {
-                            for (JsonNode nutrient : nutrients) {
-                                String paramName = nutrient.path("name").asText("").toLowerCase();
-                                double amount = nutrient.path("amount").asDouble(0.0);
-                                if (paramName.contains("calories") || paramName.contains("energy")) {
-                                    result.calories = amount;
-                                } else if (paramName.contains("protein")) {
-                                    result.protein = amount;
-                                } else if (paramName.contains("carbohydrates") || paramName.equals("carbs")) {
-                                    result.carbs = amount;
-                                } else if (paramName.equals("fat")) {
-                                    result.fat = amount;
-                                }
-                            }
+            // Step 2: Grab the image and diet type from complexSearch
+            String searchUrl = spoonacularApiUrl + "/recipes/complexSearch?query=" + query + "&number=1&apiKey=" + spoonacularApiKey;
+            try {
+                String searchStr = restTemplate.getForObject(searchUrl, String.class);
+                if (searchStr != null) {
+                    JsonNode searchRoot = objectMapper.readTree(searchStr);
+                    JsonNode results = searchRoot.path("results");
+                    if (results.isArray() && !results.isEmpty()) {
+                        JsonNode firstResult = results.get(0);
+                        result.imageUrl = firstResult.path("image").asText(null);
+                        
+                        boolean vegetarian = firstResult.path("vegetarian").asBoolean(false);
+                        boolean vegan = firstResult.path("vegan").asBoolean(false);
+                        if (vegan || vegetarian) {
+                            result.dietType = DietType.VEG;
+                        } else if (firstResult.hasNonNull("vegetarian") && !vegetarian) {
+                            result.dietType = DietType.NON_VEG;
                         }
                     }
-                } else {
-                    result.dataSource = "not-found";
                 }
-            } else {
-                result.dataSource = "api-error";
+            } catch (Exception e) {
+                 // Ignore image/diet fetch errors if nutrition succeeded
             }
+            
         } catch (Exception e) {
             result.dataSource = "fallback-error";
         }
