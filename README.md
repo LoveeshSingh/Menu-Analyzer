@@ -1,74 +1,98 @@
-# 🍽️ Menu Analyzer (Spring Boot Backend)
+# 🍽️ Menu Analyzer (Intelligent OCR & Nutrition Insights)
 
-[![Java 17](https://img.shields.io/badge/Java-17-blue.svg)](https://www.oracle.com/java/technologies/javase/jdk17-archive-downloads.html)
-[![Spring Boot](https://img.shields.io/badge/Spring_Boot-3.5.11-brightgreen.svg)](https://spring.io/projects/spring-boot)
-[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-14%2B-blue)](https://www.postgresql.org/)
+[![Live Demo](https://img.shields.io/badge/Live_Demo-Live-success.svg?style=for-the-badge)](https://menu-analyzer.loveesh.me)
+[![Java 17](https://img.shields.io/badge/Java-17-blue.svg?style=flat-square)](https://www.oracle.com/java/)
+[![Spring Boot](https://img.shields.io/badge/Spring_Boot-3.5-brightgreen.svg?style=flat-square)](https://spring.io/projects/spring-boot)
+[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-Supabase-336791.svg?style=flat-square)](https://supabase.com/)
+[![Vercel](https://img.shields.io/badge/Deployed_on-Vercel-black.svg?style=flat-square)](https://vercel.com/)
+[![Render](https://img.shields.io/badge/Backend-Render-purple.svg?style=flat-square)](https://render.com/)
 
-Menu Analyzer is a powerful backend service that allows users to upload images of restaurant menus, extract the dish names using Optical Character Recognition (OCR), and enrich each dish with detailed nutritional information, dietary classifications, and recipes via the Spoonacular Food API.
+**Menu Analyzer** is a completely decoupled, cloud-deployed full-stack web application that allows users to upload images of restaurant menus, extract the dish names using Optical Character Recognition (OCR), and enrich each dish with detailed nutritional information, dietary classifications, and recipes via the Spoonacular Food API.
 
-This project demonstrates strong capabilities in **Spring Boot architecture**, **External API Integration**, **Database Management**, and **RESTful service design**.
+## 🔗 Live Application
+**Try it out here:** [https://menu-analyzer.loveesh.me](https://menu-analyzer.loveesh.me)
 
 ---
 
-## ✨ Features
+## 📸 Application Screenshots
 
-- **Document Processing**: Upload images of restaurant menus (`multipart/form-data`) and extract food items automatically using OCR technology.
-- **Data Enrichment**: Integrates with the Spoonacular Food Nutrition API to map simple string names to complex nutritional data objects (Calories, Protein, Fat, Carbs, Vitamin profiles).
-- **Relational Persistence**: Uses PostgreSQL for robust, persistent storage of Menus and their associated Dishes via Spring Data JPA.
+<div align="center">
+  <img src="assets/hero.png" width="45%" alt="Menu Analyzer Dashboard" />
+  <img src="assets/results.png" width="45%" alt="Nutritional Search Results" />
+</div>
+<br>
+<div align="center">
+  <img src="assets/nutrition.png" width="60%" alt="Menu Scanning and Dish Enrichment" />
+</div>
+
+---
+
+## ✨ Key Features
+
+- **Decoupled Architecture:** Clean separation of concerns between a lightweight vanilla frontend and a heavy Java Spring Boot processing engine.
+- **Document Processing**: Upload images of restaurant menus (`multipart/form-data`) and extract food items automatically using OCR space technology.
+- **Data Enrichment**: Integrates with the Spoonacular Food Nutrition API to map simple string names to complex nutritional data objects (Calories, Protein, Fat, Carbs).
+- **Persistent Cloud Database**: Uses Supabase (PostgreSQL) for robust, persistent storage of Menus and their associated Dishes via Spring Data JPA.
 - **Direct Search**: Includes standalone endpoints to directly search the Spoonacular API for ad-hoc nutritional queries without uploading a menu.
-- **Architectural Best Practices**: Built using clean code principles, separating concerns across Controllers, Services, Mappers, Repositories, and Entities.
+- **CI/CD Automation**: Fully automated Github-hooked deployments via Vercel (Frontend) and Render Native Docker containers (Backend).
 
 ---
 
 ## 🏗️ Architecture & Tech Stack
 
+This project is deployed using a modern, split-stack cloud configuration:
+
+### Frontend
+- **Tech:** HTML5, Vanilla JavaScript, Custom CSS (Glassmorphism design)
+- **Deployment:** Vercel Global Edge Network
+- **Domain:** `menu-analyzer.loveesh.me`
+
+### Backend
 - **Framework:** Spring Boot 3.x, Spring Web, Spring Data JPA
 - **Language:** Java 17
-- **Database:** PostgreSQL (Production/Dev), H2 (In-Memory for optional testing)
-- **3rd Party Integration:** Spoonacular Food API
-- **Tooling:** Maven, Lombok
+- **Deployment:** Render (Dockerized Java Environment)
+- **Domain:** `api.menu-analyzer.loveesh.me`
+
+### Database
+- **Provider:** Supabase
+- **Engine:** PostgreSQL 15+ (Using IPv4 Session Pooler)
+- **ORM:** Hibernate
 
 ---
 
-## 🚀 Getting Started
+## 🚀 Local Development Setup
 
 ### Prerequisites
 - JDK 17
 - Maven
-- PostgreSQL running locally (or adjust `application.properties` to use H2)
-- A Spoonacular API Key (Get a free one at [Spoonacular](https://spoonacular.com/food-api/console))
+- A free Spoonacular API Key
 
-### 1. Configure the Environment
-Clone the repository and locate `src/main/resources/application.properties.example`. Rename it or copy its contents to a new file named `application.properties`.
-
-Add your specific configuration:
-```properties
-# Database Configuration (PostgreSQL)
-spring.datasource.url=jdbc:postgresql://localhost:5432/menu_analyzer
-spring.datasource.username=your_postgres_username
-spring.datasource.password=your_postgres_password
-spring.jpa.hibernate.ddl-auto=update
-
-# Spoonacular API Configuration
-spoonacular.api.key=YOUR_ACTUAL_SPOONACULAR_KEY
-spoonacular.api.baseUrl=https://api.spoonacular.com
+### 1. Configure Backend Environment Variables
+Navigate to the `backend/` directory. You will need to provide the following variables via your IDE or terminal environment:
+```env
+DB_URL=jdbc:postgresql://localhost:5432/menu_analyzer
+DB_USERNAME=postgres
+DB_PASSWORD=yourpassword
+OCR_API_KEY=your_ocr_key
+SPOONACULAR_API_KEY=your_spoonacular_key
 ```
 
-### 2. Run the Application
+### 2. Run the Spring Boot Server
 You can run the application directly using the Maven Wrapper from your terminal:
-
 ```bash
-# On Windows
-.\mvnw.cmd spring-boot:run
-
-# On Mac/Linux
-./mvnw spring-boot:run
+./mvnw clean package
+java -jar target/Menu-Analyzer-0.0.1-SNAPSHOT.jar
 ```
-The server will start on `http://localhost:8080`.
+*The backend API will start on `http://localhost:8080/api/v1`*
+
+### 3. Run the Frontend
+Simply open `/frontend/index.html` in your browser, or use a tool like Live Server. Ensure the `app.js` file is pointing its `API_BASE_URL` to your localhost port.
 
 ---
 
 ## 📖 API Endpoint Reference
+
+All endpoints are prefixed with `/api/v1`.
 
 ### Menu Processing Flow
 | Method | Endpoint | Description |
@@ -76,21 +100,12 @@ The server will start on `http://localhost:8080`.
 | `POST` | `/menus/scan` | Uploads a menu image (`file`) and returns parsed dishes. |
 | `GET` | `/menus/{menuId}` | Retrieves a previously scanned menu and its dishes. |
 | `GET` | `/menus/{menuId}/dishes` | Retrieves all standard dishes parsed for a single menu. |
-| `GET` | `/menus/{menuId}/dishes/{dishId}` | Retrieves a single specific dish. |
-| `POST`| `/menus/{menuId}/dishes/{dishId}/enrich`| **[External API call]** Forces Spoonacular to pull real nutrition/recipe data for the dish and saves it to the DB. |
+| `POST`| `/menus/{menuId}/dishes/{dishId}/enrich`| Forces Spoonacular to pull real nutrition data for the dish and saves it to the DB. |
 
 ### Direct Search Flow
 | Method | Endpoint | Description |
 | :--- | :--- | :--- |
-| `GET` | `/foods/search?query={food_name}` | Direct lookup to Spoonacular for comprehensive data about a specific food item. |
+| `GET` | `/foods/search?query={food_name}` | Direct lookup to Spoonacular for comprehensive nutritional data about a food item. |
 
 ---
-
-## 🛠️ Future Improvements / Roadmap
-- [ ] Implement Resilience4j Circuit Breakers to handle Spoonacular API downtime gracefully.
-- [ ] Add Redis or Spring Cache to prevent redundant calls to the Spoonacular API for commonly searched foods.
-- [ ] Implement an asynchronous Message Queue (RabbitMQ/Kafka) for the OCR scanning process to prevent HTTP timeouts.
-- [ ] Deploy utilizing Docker and AWS (EC2/RDS).
-
----
-*Created by [Loveesh Singh]*
+*Developed by [Loveesh Singh]*
