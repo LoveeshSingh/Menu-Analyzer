@@ -17,12 +17,11 @@
 ## 📸 Application Screenshots
 
 <div align="center">
-  <img src="assets/hero.png" width="45%" alt="Menu Analyzer Dashboard" />
-  <img src="assets/results.png" width="45%" alt="Nutritional Search Results" />
-</div>
-<br>
-<div align="center">
-  <img src="assets/nutrition.png" width="60%" alt="Menu Scanning and Dish Enrichment" />
+  <img src="assets/hero.png" width="100%" alt="Menu Analyzer Dashboard" />
+  <br><br>
+  <img src="assets/nutrition.png" width="100%" alt="Menu Scanning and Dish Enrichment" />
+  <br><br>
+  <img src="assets/results.png" width="100%" alt="Nutritional Search Results" />
 </div>
 
 ---
