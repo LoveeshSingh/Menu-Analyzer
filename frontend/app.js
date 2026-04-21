@@ -1,5 +1,5 @@
 const IS_LOCAL = window.location.hostname === "127.0.0.1" || window.location.hostname === "localhost";
-const API_BASE_URL = IS_LOCAL ? "http://localhost:8080" : "https://api.menu-analyzer.loveesh.me";
+const API_BASE_URL = IS_LOCAL ? "http://localhost:8080/api/v1" : "https://api.menu-analyzer.loveesh.me/api/v1";
 
 document.getElementById('scanMenuForm').addEventListener('submit', async (e) => {
     e.preventDefault();
@@ -117,7 +117,7 @@ function renderSingleDish(dish, menuId) {
     }
 
     let imageHtml = '';
-    if (dish.imageUrl && !dish.imageUrl.startsWith('/images/dish.jpg')) {
+    if (dish.imageUrl) {
          imageHtml = `<img src="${dish.imageUrl}" class="w-100 rounded mb-3 shadow-sm" style="height: 180px; object-fit: cover;" alt="${dish.name}">`;
     }
 
@@ -152,7 +152,7 @@ function renderFoodSearchResponse(data) {
     let n = data.nutrition || {};
 
     let imageHtml = '';
-    if (data.imageUrl && !data.imageUrl.startsWith('/images/dish.jpg')) {
+    if (data.imageUrl) {
          imageHtml = `<img src="${data.imageUrl}" class="rounded-circle shadow border border-4 border-white mb-4" style="width: 150px; height: 150px; object-fit: cover;" alt="${data.name}">`;
     }
 

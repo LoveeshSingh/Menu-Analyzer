@@ -54,7 +54,7 @@ public class FoodDataServiceImpl implements FoodDataService {
         dish.setDietType(result.dietType);
         dish.setRecipeText(
                 result.recipeText != null ? result.recipeText : "Recipe details not provided by external source.");
-        dish.setImageUrl(result.imageUrl != null ? result.imageUrl : "/images/" + toSlug(name) + ".jpg");
+        dish.setImageUrl(result.imageUrl);
 
         dishRepository.save(dish);
         dishNutritionRepository.save(nutrition);
@@ -86,7 +86,7 @@ public class FoodDataServiceImpl implements FoodDataService {
         return com.example.Menu_Analyzer.dto.FoodDetailsResponse.builder()
                 .name(name)
                 .aliases(List.of(name + " Search Result"))
-                .imageUrl(result.imageUrl != null ? result.imageUrl : "/images/" + toSlug(name) + ".jpg")
+                .imageUrl(result.imageUrl)
                 .dietType(result.dietType)
                 .recipeText(result.recipeText != null ? result.recipeText
                         : "Recipe details not provided by external source.")

@@ -34,7 +34,10 @@ build/
 
 ### Environment Configs ###
 # Ignore custom configuration files containing API keys
-**/src/main/resources/application.properties
+# Removed application.properties since it uses secure placeholders
 **/src/main/resources/application-dev.properties
 **/src/main/resources/application-prod.properties
 .env
+
+### Study Notes ###
+docs/
