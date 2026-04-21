@@ -1,7 +1,7 @@
 # 🍽️ Menu Analyzer (Intelligent OCR & Nutrition Insights)
 
 [![Live Demo](https://img.shields.io/badge/Live_Demo-Live-success.svg?style=for-the-badge)](https://menu-analyzer.loveesh.me)
-[![Java 17](https://img.shields.io/badge/Java-17-blue.svg?style=flat-square)](https://www.oracle.com/java/)
+[![Java 17](https://img.shields.io/badge/Java%2017-ED8B00?style=flat-square&logo=java&logoColor=white)](https://www.oracle.com/java/)
 [![Spring Boot](https://img.shields.io/badge/Spring_Boot-3.5-brightgreen.svg?style=flat-square)](https://spring.io/projects/spring-boot)
 [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-Supabase-336791.svg?style=flat-square)](https://supabase.com/)
 [![Vercel](https://img.shields.io/badge/Deployed_on-Vercel-black.svg?style=flat-square)](https://vercel.com/)
