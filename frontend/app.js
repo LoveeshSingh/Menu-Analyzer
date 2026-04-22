@@ -1,13 +1,44 @@
 const IS_LOCAL = window.location.hostname === "127.0.0.1" || window.location.hostname === "localhost";
 const API_BASE_URL = IS_LOCAL ? "http://localhost:8080/api/v1" : "https://api.menu-analyzer.loveesh.me/api/v1";
 
+const menuImage = document.getElementById('menuImage');
+const menuCamera = document.getElementById('menuCamera');
+const selectedFileInfo = document.getElementById('selectedFileInfo');
+
+menuImage.addEventListener('change', () => {
+    if (menuImage.files.length > 0) {
+        menuCamera.value = ""; // Clear camera input
+        selectedFileInfo.innerHTML = "✅ Selected: <strong>" + menuImage.files[0].name + "</strong>";
+        selectedFileInfo.classList.remove('d-none');
+    } else {
+        selectedFileInfo.classList.add('d-none');
+    }
+});
+
+menuCamera.addEventListener('change', () => {
+    if (menuCamera.files.length > 0) {
+        menuImage.value = ""; // Clear gallery input
+        selectedFileInfo.innerHTML = "✅ Selected: <strong>Camera Photo</strong>";
+        selectedFileInfo.classList.remove('d-none');
+    } else {
+        selectedFileInfo.classList.add('d-none');
+    }
+});
+
 document.getElementById('scanMenuForm').addEventListener('submit', async (e) => {
     e.preventDefault();
-    const fileInput = document.getElementById('menuImage');
-    if (!fileInput.files[0]) return;
+    
+    let selectedFile = null;
+    if (menuImage.files.length > 0) selectedFile = menuImage.files[0];
+    else if (menuCamera.files.length > 0) selectedFile = menuCamera.files[0];
+
+    if (!selectedFile) {
+        showError("Please upload an image or take a photo first.");
+        return;
+    }
 
     const formData = new FormData();
-    formData.append("file", fileInput.files[0]);
+    formData.append("file", selectedFile);
 
     toggleLoading('scanLoading', true);
     document.getElementById('resultsContainer').innerHTML = ''; 

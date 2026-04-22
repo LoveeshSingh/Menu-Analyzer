@@ -23,9 +23,14 @@
                     <h3 class="card-title fw-semibold mb-3">📸 Scan Menu</h3>
                     <p class="text-muted small">Upload an image of a menu to extract dishes and nutrition data automatically.</p>
                     <form id="scanMenuForm">
-                        <div class="mb-3">
-                            <input class="form-control file-input" type="file" id="menuImage" accept="image/*" required>
+                        <div class="input-group mb-3">
+                            <input class="form-control file-input" type="file" id="menuImage" accept="image/*">
+                            <label class="btn btn-outline-primary d-flex align-items-center mb-0 px-3" for="menuCamera" title="Take a photo" style="cursor: pointer; font-size: 1.2rem;">
+                                📷
+                            </label>
+                            <input class="d-none" type="file" id="menuCamera" accept="image/*" capture="environment">
                         </div>
+                        <div id="selectedFileInfo" class="small text-success fw-bold mb-3 d-none"></div>
                         <button type="submit" class="btn btn-primary w-100 action-btn">Analyze Menu</button>
                     </form>
                     <div id="scanLoading" class="mt-3 text-center d-none">
