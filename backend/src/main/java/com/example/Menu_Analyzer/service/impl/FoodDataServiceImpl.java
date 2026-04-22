@@ -124,10 +124,10 @@ public class FoodDataServiceImpl implements FoodDataService {
     private SpoonacularResult fetchFromSpoonacular(String query) {
         SpoonacularResult result = new SpoonacularResult();
         try {
-            // Step 1: Specifically guess nutrition to prevent getting massive recipe calories
-            String guessUrl = spoonacularApiUrl + "/recipes/guessNutrition?title={title}&apiKey={apiKey}";
+            // Step 1: Specifically guess nutrition to prevent getting massive recipe calories (e.g. Espresso Brownie instead of Espresso)
+            String guessUrl = spoonacularApiUrl + "/recipes/guessNutrition?title=" + query + "&apiKey=" + spoonacularApiKey;
             try {
-                String guessStr = restTemplate.getForObject(guessUrl, String.class, query, spoonacularApiKey);
+                String guessStr = restTemplate.getForObject(guessUrl, String.class);
                 if (guessStr != null) {
                     JsonNode guessRoot = objectMapper.readTree(guessStr);
                     if (guessRoot.has("status") && "failure".equals(guessRoot.path("status").asText())) {
@@ -148,9 +148,9 @@ public class FoodDataServiceImpl implements FoodDataService {
             }
 
             // Step 2: Grab the image and diet type from complexSearch
-            String searchUrl = spoonacularApiUrl + "/recipes/complexSearch?query={query}&number=1&apiKey={apiKey}";
+            String searchUrl = spoonacularApiUrl + "/recipes/complexSearch?query=" + query + "&number=1&apiKey=" + spoonacularApiKey;
             try {
-                String searchStr = restTemplate.getForObject(searchUrl, String.class, query, spoonacularApiKey);
+                String searchStr = restTemplate.getForObject(searchUrl, String.class);
                 if (searchStr != null) {
                     JsonNode searchRoot = objectMapper.readTree(searchStr);
                     JsonNode results = searchRoot.path("results");
@@ -164,35 +164,6 @@ public class FoodDataServiceImpl implements FoodDataService {
                             result.dietType = DietType.VEG;
                         } else if (firstResult.hasNonNull("vegetarian") && !vegetarian) {
                             result.dietType = DietType.NON_VEG;
-                        }
-                    }
-                }
-                
-                // Fallback 1: Menu Items Search
-                if (result.imageUrl == null) {
-                    String menuUrl = spoonacularApiUrl + "/food/menuItems/search?query={query}&number=1&apiKey={apiKey}";
-                    String menuStr = restTemplate.getForObject(menuUrl, String.class, query, spoonacularApiKey);
-                    if (menuStr != null) {
-                        JsonNode menuRoot = objectMapper.readTree(menuStr);
-                        JsonNode menuItems = menuRoot.path("menuItems");
-                        if (menuItems.isArray() && !menuItems.isEmpty()) {
-                            result.imageUrl = menuItems.get(0).path("image").asText(null);
-                        }
-                    }
-                }
-
-                // Fallback 2: Ingredients Search
-                if (result.imageUrl == null) {
-                    String ingUrl = spoonacularApiUrl + "/food/ingredients/search?query={query}&number=1&apiKey={apiKey}";
-                    String ingStr = restTemplate.getForObject(ingUrl, String.class, query, spoonacularApiKey);
-                    if (ingStr != null) {
-                        JsonNode ingRoot = objectMapper.readTree(ingStr);
-                        JsonNode ingResults = ingRoot.path("results");
-                        if (ingResults.isArray() && !ingResults.isEmpty()) {
-                            String imgName = ingResults.get(0).path("image").asText(null);
-                            if (imgName != null && !imgName.isEmpty()) {
-                                result.imageUrl = "https://spoonacular.com/cdn/ingredients_500x500/" + imgName;
-                            }
                         }
                     }
                 }
