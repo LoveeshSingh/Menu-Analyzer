@@ -125,9 +125,9 @@ public class FoodDataServiceImpl implements FoodDataService {
         SpoonacularResult result = new SpoonacularResult();
         try {
             // Step 1: Specifically guess nutrition to prevent getting massive recipe calories (e.g. Espresso Brownie instead of Espresso)
-            String guessUrl = spoonacularApiUrl + "/recipes/guessNutrition?title=" + query + "&apiKey=" + spoonacularApiKey;
+            String guessUrl = spoonacularApiUrl + "/recipes/guessNutrition?title={title}&apiKey={apiKey}";
             try {
-                String guessStr = restTemplate.getForObject(guessUrl, String.class);
+                String guessStr = restTemplate.getForObject(guessUrl, String.class, query, spoonacularApiKey);
                 if (guessStr != null) {
                     JsonNode guessRoot = objectMapper.readTree(guessStr);
                     if (guessRoot.has("status") && "failure".equals(guessRoot.path("status").asText())) {
@@ -148,9 +148,9 @@ public class FoodDataServiceImpl implements FoodDataService {
             }
 
             // Step 2: Grab the image and diet type from complexSearch
-            String searchUrl = spoonacularApiUrl + "/recipes/complexSearch?query=" + query + "&number=1&apiKey=" + spoonacularApiKey;
+            String searchUrl = spoonacularApiUrl + "/recipes/complexSearch?query={query}&number=1&apiKey={apiKey}";
             try {
-                String searchStr = restTemplate.getForObject(searchUrl, String.class);
+                String searchStr = restTemplate.getForObject(searchUrl, String.class, query, spoonacularApiKey);
                 if (searchStr != null) {
                     JsonNode searchRoot = objectMapper.readTree(searchStr);
                     JsonNode results = searchRoot.path("results");
