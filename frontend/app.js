@@ -148,8 +148,10 @@ function renderSingleDish(dish, menuId) {
     }
 
     let imageHtml = '';
-    if (dish.imageUrl) {
+    if (dish.imageUrl && dish.imageUrl !== 'null') {
          imageHtml = `<img src="${dish.imageUrl}" class="w-100 rounded mb-3 shadow-sm" style="height: 180px; object-fit: cover;" alt="${dish.name}">`;
+    } else {
+         imageHtml = `<div class="w-100 rounded mb-3 shadow-sm d-flex flex-column align-items-center justify-content-center bg-light text-secondary" style="height: 180px;"><span style="font-size: 2rem;">🍽️</span><span class="small mt-2">No Image</span></div>`;
     }
 
     let dietBadge = '';
@@ -183,8 +185,10 @@ function renderFoodSearchResponse(data) {
     let n = data.nutrition || {};
 
     let imageHtml = '';
-    if (data.imageUrl) {
+    if (data.imageUrl && data.imageUrl !== 'null') {
          imageHtml = `<img src="${data.imageUrl}" class="rounded-circle shadow border border-4 border-white mb-4" style="width: 150px; height: 150px; object-fit: cover;" alt="${data.name}">`;
+    } else {
+         imageHtml = `<div class="rounded-circle shadow border border-4 border-white mb-4 d-flex align-items-center justify-content-center bg-light text-secondary mx-auto" style="width: 150px; height: 150px;"><span style="font-size: 3rem;">🍽️</span></div>`;
     }
 
     let dietBadge = '';
